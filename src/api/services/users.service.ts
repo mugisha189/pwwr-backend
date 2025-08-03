@@ -1,16 +1,13 @@
-import prisma from '../helpers/prisma';
-import APIError from '../helpers/APIError';
-import status from 'http-status';
+import prisma from "../helpers/prisma";
+import APIError from "../helpers/APIError";
+import status from "http-status";
 
 const getAllUsers = async () => {
   return prisma.user.findMany({
     select: {
       id: true,
-      firstName: true,
-      lastName: true,
+      name: true,
       email: true,
-      username: true,
-      phone: true,
       role: true,
       createdAt: true,
       updatedAt: true,
@@ -23,11 +20,8 @@ const getUserById = async (id: string) => {
     where: { id },
     select: {
       id: true,
-      firstName: true,
-      lastName: true,
+      name: true,
       email: true,
-      username: true,
-      phone: true,
       role: true,
       createdAt: true,
       updatedAt: true,
@@ -35,7 +29,7 @@ const getUserById = async (id: string) => {
   });
 
   if (!user) {
-    throw new APIError(status.NOT_FOUND, 'User not found');
+    throw new APIError(status.NOT_FOUND, "User not found");
   }
 
   return user;
@@ -45,19 +39,14 @@ const searchUsers = async (query: string) => {
   return prisma.user.findMany({
     where: {
       OR: [
-        { email: { contains: query, mode: 'insensitive' } },
-        { firstName: { contains: query, mode: 'insensitive' } },
-        { lastName: { contains: query, mode: 'insensitive' } },
-        { username: { contains: query, mode: 'insensitive' } },
+        { email: { contains: query, mode: "insensitive" } },
+        { name: { contains: query, mode: "insensitive" } },
       ],
     },
     select: {
       id: true,
-      firstName: true,
-      lastName: true,
+      name: true,
       email: true,
-      username: true,
-      phone: true,
       role: true,
       createdAt: true,
       updatedAt: true,
@@ -72,28 +61,25 @@ const editUser = async (id: string, updateData: Partial<any>) => {
       data: updateData,
       select: {
         id: true,
-        firstName: true,
-        lastName: true,
+        name: true,
         email: true,
-        username: true,
-        phone: true,
-        role: true,
 
+        role: true,
         createdAt: true,
         updatedAt: true,
       },
     });
   } catch {
-    throw new APIError(status.NOT_FOUND, 'User not found');
+    throw new APIError(status.NOT_FOUND, "User not found");
   }
 };
 
 const deleteUser = async (id: string) => {
   try {
     await prisma.user.delete({ where: { id } });
-    return { msg: 'User deleted successfully' };
+    return { msg: "User deleted successfully" };
   } catch {
-    throw new APIError(status.NOT_FOUND, 'User not found');
+    throw new APIError(status.NOT_FOUND, "User not found");
   }
 };
 
