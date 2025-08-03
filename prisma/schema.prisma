@@ -1,0 +1,50 @@
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") 
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum ERole {
+  USER
+  ADMIN
+}
+
+enum ETokenType {
+  PASSWORD_RESET
+  VERIFY_EMAIL
+  ACCESS
+  REFRESH
+}
+
+model User {
+  id        String     @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String     @unique
+  username  String     @unique
+  phone     String
+  password  String
+  emailVerified Boolean @default(false)
+  role      ERole   @default(USER)
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  tokens    Token[]    
+}
+
+model Token {
+  id        String        @id @default(uuid())
+  email     String
+  token     String
+  type      ETokenType @default(PASSWORD_RESET)
+  expireAt  DateTime
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  user      User?         @relation(fields: [email], references: [email], onDelete: Cascade)
+}
