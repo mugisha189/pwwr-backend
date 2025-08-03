@@ -5,9 +5,9 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf ./build",
-    "build": "yarn clean && tsc",
-    "dev": " cross-env NODE_ENV=development ts-node-dev .",
-    "start": " cross-env NODE_ENV=production ts-node src/index.ts",
+    "build": "node api.js && yarn clean && tsc",
+    "dev": "node api.js && cross-env NODE_ENV=development ts-node-dev .",
+    "start": "node api.js && cross-env NODE_ENV=production ts-node src/index.ts",
     "format": "prettier src --write",
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --ext .ts . --fix"
